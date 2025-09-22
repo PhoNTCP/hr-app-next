@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id                Int       @id @default(autoincrement())
+  name              String
+  email             String    @unique
+  emailVerifiedAt   DateTime? @map("email_verified_at")
+  password          String
+  rememberToken     String?   @map("remember_token")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+}
+
+model PasswordReset {
+  email     String
+  token     String
+  createdAt DateTime? @map("created_at")
+
+  @@id([email, token])
+}
+
+model InitUser {
+  id                 Int      @id @default(autoincrement())
+  thaiId             String   @unique @map("thai_id")
+  code               String
+  empCode            String?  @map("emp_code")
+  name               String
+  surname            String
+  engName            String?  @map("eng_name")
+  engSurname         String?  @map("eng_surname")
+  title              String?
+  nickName           String?  @map("nick_name")
+  email              String?
+  lineId             String?  @map("line_id")
+  line               String?
+  bot                String?
+  bankNo             String?  @map("bank_no")
+  companyPhoneNo     String?  @map("company_phone_no")
+  internalExtension  String?  @map("internal_extension")
+  personalPhoneNo    String?  @map("personal_phone_no")
+  status             String?  
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+}
