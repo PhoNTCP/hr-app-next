@@ -44,7 +44,7 @@ export default function LiffRegisterPage() {
       alert("ผูกบัญชีสำเร็จ!");
       if (liff.isInClient()) liff.closeWindow();
     } else {
-      alert(data.error || "ผูกบัญชีไม่สำเร็จ");
+      alert(data.error || "ผูกบัญชีไม่สำเร็จ!!!!!");
     }
   };
 
