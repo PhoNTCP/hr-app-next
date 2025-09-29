@@ -24,30 +24,35 @@ export default function LoginPage() {
       setMsg(data.error || "Login failed");
     }
   };
-
+  
   return (
-    <div className="max-w-md p-6 mx-auto">
-      <h1 className="text-xl font-bold">Login</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mt-4">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-indigo-400/25 to-emerald-400/25">
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-md p-8 space-y-4 border shadow-lg backdrop-blur-xl bg-white/70 border-white/40 rounded-2xl"
+      >
+        <h2 className="text-2xl font-bold text-center text-neutral-900">Login</h2>
         <input
           type="email"
-          placeholder="Email"
-          className="p-2 border rounded"
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
+          placeholder="Email"
+          className="w-full px-4 py-2 border rounded-xl border-neutral-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
         <input
           type="password"
-          placeholder="Password"
-          className="p-2 border rounded"
           value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })}
+          placeholder="Password"
+          className="w-full px-4 py-2 border rounded-xl border-neutral-300 focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
-        <button type="submit" className="p-2 text-white bg-green-600 rounded">
+        <button
+          type="submit"
+          className="w-full py-2 font-semibold text-white bg-indigo-500 rounded-xl hover:bg-indigo-600"
+        >
           Login
         </button>
       </form>
-      {msg && <p className="mt-2 text-red-600">{msg}</p>}
     </div>
   );
 }

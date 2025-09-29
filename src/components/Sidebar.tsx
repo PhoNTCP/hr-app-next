@@ -20,21 +20,27 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 min-h-screen p-4 text-white bg-gray-900">
-      <h2 className="mb-6 text-xl font-bold">HR Connect</h2>
-      <nav className="flex flex-col gap-2">
+    <aside
+      className="glass-sidebar"
+    >
+      <div className="flex items-center gap-3 px-2 mb-3">
+        <div className="size-9 rounded-2xl bg-neutral-900" />
+        <div className="text-lg font-semibold tracking-tight">HR Connect</div>
+      </div>
+
+      <nav className="flex flex-col gap-1">
         {menu.map((item) => (
           <Link
             key={item.path}
             href={item.path}
-            className={`p-2 rounded hover:bg-gray-700 ${
-              pathname === item.path ? "bg-gray-700" : ""
-            }`}
+            className={`glass-link ${pathname === item.path ? "glass-link-active" : ""}`}
           >
             {item.label}
           </Link>
         ))}
       </nav>
+
+      <div className="pt-6 mt-6 text-xs text-neutral-500">v1.0</div>
     </aside>
   );
 }

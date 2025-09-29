@@ -16,22 +16,25 @@ export default function Topbar() {
       .catch(() => router.push("/login"));
   }, [router]);
 
-const handleLogout = async () => {
-  await fetch("/api/auth/logout", {
-    method: "POST",
-    credentials: "include",
-  });
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
+    });
 
-  setUserName("Guest"); // reset ชื่อ user
-  router.push("/"); // redirect
-};
+    setUserName("Guest");
+    router.push("/");
+  };
 
   return (
-    <div className="flex items-center justify-between px-6 py-3 text-white bg-blue-600">
-      <div />
+    <div className="flex items-center justify-between px-6 py-3 border-b backdrop-blur-xl bg-white/60 dark:bg-neutral-900/70 border-white/30 dark:border-neutral-700/60 text-neutral-900 dark:text-neutral-100">
+      <div /> {/* เว้นไว้ถ้ามีโลโก้/ปุ่มอื่นในอนาคต */}
       <div className="flex items-center gap-4">
-        <span>{userName}</span>
-        <button onClick={handleLogout} className="px-3 py-1 bg-red-600 rounded">
+        <span className="font-medium">{userName}</span>
+        <button
+          onClick={handleLogout}
+          className="px-3 py-1 text-white shadow-lg rounded-xl bg-red-500/90 hover:bg-red-600"
+        >
           Logout
         </button>
       </div>
