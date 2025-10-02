@@ -1,49 +1,27 @@
-import { NextResponse } from "next/server";
-import { Client } from "@line/bot-sdk";
-import crypto from "crypto";
+import { NextRequest, NextResponse } from "next/server";
+import  prisma  from "@/lib/prisma";
+import { replyMessage, verifyLineSignature } from "@/lib/line";
 
-const CHANNEL_SECRET = process.env.LINE_CHANNEL_SECRET!;
-const client = new Client({
-  channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN!,
-});
-
-function verifyLineSignature(rawBody: string, signature: string | null) {
-  if (!signature) return false;
-  const hmac = crypto.createHmac("SHA256", CHANNEL_SECRET);
-  const digest = hmac.update(rawBody).digest("base64");
-  return signature === digest;
-}
-
-export async function POST(req: Request) {
-  // อ่าน raw body เพื่อ verify
-  const rawBody = await req.text();
-
-  const signature = (req.headers as any).get("x-line-signature");
-  if (!verifyLineSignature(rawBody, signature)) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 403 });
+export async function POST(req: NextRequest) {
+  const signature = req.headers.get("x-line-signature") || "";
+  const raw = await req.text();
+  if (!verifyLineSignature(raw, signature, process.env.LINE_CHANNEL_SECRET!)) {
+    return new NextResponse("Invalid signature", { status: 401 });
   }
-
-  const body = JSON.parse(rawBody);
-
-  for (const event of body.events || []) {
+  const body = JSON.parse(raw);
+  for (const event of body.events ?? []) {
     if (event.type === "message" && event.message.type === "text") {
-      const text: string = event.message.text?.trim();
-
-      if (text === "ลงทะเบียน") {
-        // ลิงก์ไปหน้า LIFF (เปิดใน LINE)
-        const liffUrl = `https://liff.line.me/${process.env.NEXT_PUBLIC_LIFF_ID}`;
-        await client.replyMessage(event.replyToken, {
-          type: "text",
-          text: `กดลิงก์เพื่อผูกบัญชี: ${liffUrl}`,
-        });
+      const text = (event.message.text || "").trim();
+      const kw = await prisma.keyword.findFirst({
+        where: { keyword: text, status: "A" },
+        include: { template: true },
+      });
+      if (kw?.template) {
+        await replyMessage(event.replyToken, kw.template.payload as any);
       } else {
-        await client.replyMessage(event.replyToken, {
-          type: "text",
-          text: "พิมพ์คำว่า \"ลงทะเบียน\" เพื่อเริ่มผูกบัญชี LINE ครับ",
-        });
+        await replyMessage(event.replyToken, { type: "text", text: kw?.fallback || "ยังไม่พบคำสั่งนี้ในระบบ" });
       }
     }
   }
-
   return NextResponse.json({ ok: true });
 }

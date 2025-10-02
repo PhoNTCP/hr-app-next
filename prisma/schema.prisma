@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,15 +6,16 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id                Int       @id @default(autoincrement())
-  name              String
-  email             String    @unique
-  emailVerifiedAt   DateTime? @map("email_verified_at")
-  password          String
-  rememberToken     String?   @map("remember_token")
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
+  id              Int       @id @default(autoincrement())
+  name            String
+  email           String    @unique
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  password        String
+  rememberToken   String?   @map("remember_token")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
 }
 
 model PasswordReset {
@@ -32,26 +27,45 @@ model PasswordReset {
 }
 
 model InitUser {
-  id                 Int      @id @default(autoincrement())
-  thaiId             String   @unique @map("thai_id")
-  code               String
-  empCode            String?  @map("emp_code")
-  name               String
-  surname            String
-  engName            String?  @map("eng_name")
-  engSurname         String?  @map("eng_surname")
-  title              String?
-  nickName           String?  @map("nick_name")
-  email              String?
-  lineId             String?  @map("line_id")
-  line               String?
-  bot                String?
-  bankNo             String?  @map("bank_no")
-  companyPhoneNo     String?  @map("company_phone_no")
-  internalExtension  String?  @map("internal_extension")
-  personalPhoneNo    String?  @map("personal_phone_no")
-  status             String?  
+  id                Int      @id @default(autoincrement())
+  thaiId            String   @unique(map: "inituser_unique") @map("thai_id")
+  code              String
+  name              String
+  surname           String
+  title             String?
+  lineId            String?  @map("line_id")
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  bankNo            String?  @map("bank_no")
+  bot               String?
+  companyPhoneNo    String?  @map("company_phone_no")
+  email             String?
+  empCode           String?  @map("emp_code")
+  engName           String?  @map("eng_name")
+  engSurname        String?  @map("eng_surname")
+  internalExtension String?  @map("internal_extension")
+  line              String?
+  nickName          String?  @map("nick_name")
+  personalPhoneNo   String?  @map("personal_phone_no")
+  status            String?
+}
+model Keyword {
+  id         Int              @id @default(autoincrement())
+  keyword    String           @unique
+  fallback   String?
+  templateId Int?
+  template   MessageTemplate? @relation(fields: [templateId], references: [id])
+  status     String           @default("A")
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt      @map("updated_at")
+model MessageTemplate {
+  id        Int       @id @default(autoincrement())
+  type      String
+  name      String    @unique
+  payload   Json
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  keywords  Keyword[]
 }

@@ -20,4 +20,11 @@ body { @apply bg-white text-neutral-900; }
   .glass-btn-danger { @apply text-white glass-btn bg-red-500/90 hover:bg-red-600; }
   .glass-btn-primary{ @apply text-white bg-indigo-500 glass-btn hover:bg-indigo-600; }
   .glass-btn-success{ @apply text-white glass-btn bg-emerald-500 hover:bg-emerald-600; }
+  .glass {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 1rem;
+}
 }
